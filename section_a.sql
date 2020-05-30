@@ -5,6 +5,19 @@ SELECT CONCAT(S_FIRST, CONCAT(' ', S_LAST)) AS NAME, TRUNC(months_between(sysdat
 FROM STUDENT
 WHERE TRUNC(months_between(sysdate,S_DOB)/12) > 24;
 
+-- B
+SELECT bldg_code, SUM(capacity)
+FROM LOCATION
+WHERE capacity > 4
+HAVING SUM(capacity) > 150
+GROUP BY bldg_code;
+
+-- C
+SELECT f_last || ' ' || f_first AS advisor, s_last || ' ' || s_first AS student
+FROM faculty JOIN student ON faculty.f_id = student.f_id
+ORDER BY f_last || ' ' || f_first ASC;
+
+
 -- D
 SELECT CONCAT(F_FIRST, CONCAT(' ', F_LAST)) AS NAME, BLDG_CODE AS CODE, ROOM
 FROM FACULTY NATURAL JOIN LOCATION
@@ -25,8 +38,15 @@ FROM faculty JOIN student ON faculty.f_id = student.f_id
 GROUP BY faculty.f_id))
 GROUP BY CONCAT(F_FIRST, CONCAT(' ', F_LAST));
 
--- H partial (counts totals twice, maybe use union?)
-SELECT CONCAT(S_FIRST, CONCAT(' ', S_LAST)), SUM(credits)
+-- H
+SELECT S_FIRST || ' ' || S_LAST  AS Name, SUM(credits)
 FROM student JOIN enrollment ON student.s_id = enrollment.s_id JOIN course_section ON enrollment.c_sec_id = course_section.c_sec_id
 JOIN course on course_section.course_no = course.course_no
-GROUP BY CONCAT(S_FIRST, CONCAT(' ', S_LAST));
+GROUP BY S_FIRST || ' ' || S_LAST;
+
+-- I
+SELECT Name, COUNT(course), SUM(credits)
+FROM student JOIN enrollment ON student.s_id = enrollment.s_id JOIN course_section ON enrollment.c_sec_id = course_section.c_sec_id
+HAVING COUNT(*)
+JOIN course on course_section.course_no = course.course_no
+GROUP BY S_FIRST || ' ' || S_LAST;
